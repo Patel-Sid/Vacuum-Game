@@ -1,0 +1,22 @@
+/**
+ * 
+ */
+package sprites;
+
+/**
+ * Representation of a Vaccum
+ * @author siddh
+ *
+ */
+public class Vacuum extends Sprite{
+	
+	private int score; // Score of the player
+	private int capacity; // Capacity of the vacuum
+	private int fullness; // Checks whether the vacuum is full or not 
+	private Sprite under; // Store's what is under the vacuum
+
+	public Vacuum(char symbol, int row, int column, int capacity) {
+		super(symbol, row, column);
+	}
+
+}

@@ -1,0 +1,50 @@
+/**
+ * 
+ */
+package game;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author siddh
+ *
+ */
+public class MapGrid<T> extends Grid<T> {
+	
+	private Map<Integer, Map<Integer, T>> grid = new HashMap<Integer, Map<Integer,T>>(); // Map representation of a Grid
+	private int numRows;
+	private int numColumns;
+	
+	public MapGrid(int numRows, int numColumns){
+		this.numRows = numRows;
+		this.numColumns = numColumns;
+
+	}
+
+	@Override
+	public T GetCell(int row, int column) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void SetCell(int row, int column, T item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getNumRows() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getNumColumns() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+
+}

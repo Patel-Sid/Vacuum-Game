@@ -1,0 +1,28 @@
+/**
+ * 
+ */
+package sprites;
+
+/**
+ * Representation of Sprite Dirt
+ * @author siddh
+ *
+ */
+public abstract class Dirt extends Sprite{
+
+	private int value;
+
+	public Dirt(char symbol, int row, int column, int value) {
+		super(symbol, row, column);
+		this.value = value;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public int getValue() {
+		return value;
+	}
+	
+
+}

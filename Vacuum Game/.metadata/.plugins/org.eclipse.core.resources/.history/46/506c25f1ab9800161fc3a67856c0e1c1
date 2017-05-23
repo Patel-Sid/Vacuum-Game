@@ -1,0 +1,12 @@
+/**
+ * 
+ */
+package game;
+
+/**
+ * @author siddh
+ *
+ */
+public abstract class Grid<T> {
+
+}

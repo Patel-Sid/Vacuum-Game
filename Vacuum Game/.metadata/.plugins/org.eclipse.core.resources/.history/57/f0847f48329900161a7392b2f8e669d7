@@ -1,0 +1,41 @@
+/**
+ * 
+ */
+package game;
+
+import java.util.List;
+
+/**
+ * @author siddh
+ *
+ */
+public class ListGrid<T> extends Grid<T> {
+	
+	private List<List<T>> grid; // List representation of a Grid
+	
+
+	@Override
+	public T GetCell(int row, int column) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void SetCell(int row, int column, T item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getNumRows() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getNumColumns() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+}

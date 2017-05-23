@@ -1,0 +1,20 @@
+/**
+ * 
+ */
+package game;
+
+/**
+ * Define two dimensional grid of objects of 
+ * type T, where T is its type parameter
+ * @author patelsi6
+ *
+ */
+public abstract class Grid {
+	
+	
+	
+	public abstract int getNumRows();
+	
+	public abstract int getNumColumns();
+
+}

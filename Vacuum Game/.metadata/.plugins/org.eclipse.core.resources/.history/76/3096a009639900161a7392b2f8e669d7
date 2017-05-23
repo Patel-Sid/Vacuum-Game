@@ -1,0 +1,34 @@
+/**
+ * 
+ */
+package ui;
+
+import game.VacuumGame;
+
+/**
+ * @author siddh
+ *
+ */
+public class TextUi implements Ui{
+	
+	private VacuumGame game;
+	
+
+	@Override
+	public void launchGame() {
+		
+	}
+
+	@Override
+	public void displayWinner() {
+		
+	}
+	
+	/** Initializes a GUI for the given VacuumGame.
+	   * @param game The VacuumGame of this GUI 
+	   */
+	  public TextUi(VacuumGame game) {
+	    this.game = game;
+	  }
+
+}

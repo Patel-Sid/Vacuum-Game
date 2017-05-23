@@ -1,0 +1,405 @@
+package game;
+
+import sprites.CleanHallway;
+import sprites.Dumpster;
+import sprites.Dust;
+import sprites.DustBall;
+import sprites.Sprite;
+import sprites.Vacuum;
+import sprites.Wall;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
+/**
+ * A class that represents the basic functionality of the vacuum game.
+ * This class is responsible for performing the following operations:
+ * 1. At creation, it initializes the instance variables used to store the
+ *        current state of the game.
+ * 2. When a move is specified, it checks if it is a legal move and makes the
+ *        move if it is legal.
+ * 3. It reports information about the current state of the game when asked.
+ */
+/**
+ * @author siddh
+ *
+ */
+public class VacuumGame {
+
+  private Random random;            // a random number generator to move the DustBalls
+  private Grid<Sprite> grid;        // the grid
+  private Vacuum vacuum1;           // the first player
+  private Vacuum vacuum2;           // the second player
+  private List<Dust> dusts;         // the dusts
+  private List<DustBall> dustBalls; // the dust balls
+
+  /**
+   * Creates a new <code>VacuumGame</code> that corresponds to the given input text file. Assumes
+   * that the input file has one or more lines of equal lengths, and that each character in it
+   * (other than newline) is a character that represents one of the <code>Sprite</code>s in this
+   * game. Uses gridType to implement the grid.
+   * @param layoutFileName path to the input grid file
+   * @param gridType the type of grid implementation to use
+   */
+  public VacuumGame(String layoutFileName, Constants.GridType gridType) throws IOException {
+    dusts = new ArrayList<>();
+    dustBalls = new ArrayList<>();
+    random = new Random();
+
+    // open the file, read the contents, and determine dimensions of the grid
+    int[] dimensions = getDimensions(layoutFileName);
+    int numRows = dimensions[0];
+    int numColumns = dimensions[1];
+        
+    if (gridType.equals(Constants.GridType.LIST_GRID)) {
+      grid = new ListGrid<>(numRows, numColumns);
+    } else {
+      grid = new MapGrid<>(numRows, numColumns);
+    }
+
+    // open the file again, read the contents, and store them in grid
+    Scanner sc = new Scanner(new File(layoutFileName));
+    for (int row = 0; row < numRows; row++) {
+      String nextLine = sc.nextLine();
+
+      /******** 
+       * Initialize the grid
+       ********/
+      // Loop over each line by column
+      for (int col = 0; col < numColumns; col++){
+		  char chr;
+		  // Get the character at the given index
+		  chr = nextLine.charAt(col);
+		  // Set the 
+		  grid.SetCell(row, col, charToSprite(chr,row,col));
+	  }
+      
+    }
+    sc.close();
+  }
+
+
+	/*********
+     * Lots of methods
+     ************/
+  
+  public void dustBallMove(){
+	  if ((vacuum1.getUnder().getSymbol() | vacuum2.getUnder().getSymbol())!= Constants.DUST_BALL){
+		  for (int i = 0; i<dustBalls.size(); i++){
+			  DustBall dustBunnie = dustBalls.get(i);
+			  int xcord = dustBunnie.getRow();
+			  int ycord = dustBunnie.getColumn();
+			  int row = random.nextInt(1 + 1 + 1) -1;
+			  int column = random.nextInt(1 + 1 + 1) -1;
+			  
+			  if (grid.GetCell(row, column).getSymbol() == Constants.CLEAN){
+				  grid.SetCell(row, column, dustBalls.get(i));
+			  }
+			  else if (grid.GetCell(row, column).getSymbol() == Constants.DUST){
+				  grid.SetCell(row, column, dustBalls.get(i));
+				  dustBalls.get
+			  }		  
+		  }
+	  }
+  }
+  
+  /**
+   * Return the number of Rows in the grid
+   * @return the number of Rows in the grid
+   */
+  public int getNumRows(){
+	  return grid.getNumRows();
+  }
+  /**
+   * Return the number of Columns in the grid
+   * @return the number of Columns in the grid
+   */
+  public int getNumColumns(){
+	  return grid.getNumColumns();
+  }
+  
+ /**
+  * Return the Sprite at the given row and column
+  * @param row the row at which Sprite is located 
+  * @param column the column at which Sprite is located
+  * @return the Sprite at the given row and column
+  */
+  public Sprite getSprite(int row, int column){
+	  return grid.GetCell(row, column);
+  }
+  /**
+   * Return the grid
+   * @return the grid
+   */
+  public Grid<Sprite> getGrid(){
+	  return grid;
+  }
+  /**
+   * Return vacuum 1 
+   * @return vacuum 1
+   */
+  public Vacuum getVacuumOne(){
+	  return vacuum1;
+  }
+  /**
+   * Return vacuum 2
+   * @return vacuum 2
+   */
+  public Vacuum getVacuumTwo(){
+	  return vacuum2;
+  }
+  
+  public void move(char nextMove){
+	  if (nextMove == Constants.P1_LEFT){
+		  Sprite spr = grid.GetCell(vacuum1.getRow(), vacuum1.getColumn()+Constants.LEFT);
+		  if (spr.getSymbol() != Constants.WALL){
+			  if (spr.getSymbol() != Constants.P2 ){
+				  Sprite oldspr = vacuum1.getUnder();
+				  vacuum1.setUnder(grid.GetCell(vacuum1.getRow(), vacuum1.getColumn()+Constants.LEFT));
+				  grid.SetCell(vacuum1.getRow(), vacuum1.getColumn(), oldspr);
+				  grid.SetCell(vacuum1.getRow(), vacuum1.getColumn()+Constants.LEFT, vacuum1);
+				  vacuum1.moveTo(vacuum1.getRow(), vacuum1.getColumn()+Constants.LEFT);
+				  validP1Move(spr);
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P1_RIGHT){
+		  Sprite spr = grid.GetCell(vacuum1.getRow(), vacuum1.getColumn()+Constants.RIGHT);
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P2 ){
+				  Sprite oldspr = vacuum1.getUnder();
+				  vacuum1.setUnder(grid.GetCell(vacuum1.getRow(), vacuum1.getColumn()+Constants.RIGHT));
+				  grid.SetCell(vacuum1.getRow(), vacuum1.getColumn(), oldspr);
+				  grid.SetCell(vacuum1.getRow(), vacuum1.getColumn()+Constants.RIGHT, vacuum1);
+				  vacuum1.moveTo(vacuum1.getRow(), vacuum1.getColumn()+Constants.RIGHT);
+				  validP1Move(spr);
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P1_DOWN){
+		  Sprite spr = grid.GetCell(vacuum1.getRow()+Constants.DOWN, vacuum1.getColumn());
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P2 ){
+				  Sprite oldspr = vacuum1.getUnder();
+				  vacuum1.setUnder(grid.GetCell(vacuum1.getRow()+Constants.DOWN, vacuum1.getColumn()));
+				  grid.SetCell(vacuum1.getRow(), vacuum1.getColumn(), oldspr);
+				  grid.SetCell(vacuum1.getRow()+Constants.DOWN, vacuum1.getColumn(), vacuum1);
+				  vacuum1.moveTo(vacuum1.getRow()+Constants.DOWN, vacuum1.getColumn());
+				  validP1Move(spr);
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P1_UP){
+		  Sprite spr = grid.GetCell(vacuum1.getRow()+Constants.UP, vacuum1.getColumn());
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P2 ){
+				  Sprite oldspr = vacuum1.getUnder();
+				  vacuum1.setUnder(grid.GetCell(vacuum1.getRow()+Constants.UP, vacuum1.getColumn()));
+				  grid.SetCell(vacuum1.getRow(), vacuum1.getColumn(), oldspr);
+				  grid.SetCell(vacuum1.getRow()+Constants.UP, vacuum1.getColumn(), vacuum1);
+				  vacuum1.moveTo(vacuum1.getRow()+Constants.UP, vacuum1.getColumn());
+				  validP1Move(spr);
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P2_LEFT){
+		  Sprite spr = grid.GetCell(vacuum2.getRow(), vacuum2.getColumn()+Constants.LEFT);
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P1 ){
+				  Sprite oldspr = vacuum2.getUnder();
+				  vacuum2.setUnder(grid.GetCell(vacuum2.getRow(), vacuum2.getColumn()+Constants.LEFT));
+				  grid.SetCell(vacuum2.getRow(), vacuum2.getColumn(),oldspr);
+				  grid.SetCell(vacuum2.getRow(), vacuum2.getColumn()+Constants.LEFT, vacuum2);
+				  vacuum2.moveTo(vacuum2.getRow(), vacuum2.getColumn()+Constants.LEFT);
+				  validP2Move(spr);
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P2_RIGHT){
+		  Sprite spr = grid.GetCell(vacuum2.getRow(), vacuum2.getColumn()+Constants.RIGHT);
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P1 ){
+				  Sprite oldspr = vacuum2.getUnder();
+				  vacuum2.setUnder(grid.GetCell(vacuum2.getRow(), vacuum2.getColumn()+Constants.RIGHT));
+				  grid.SetCell(vacuum2.getRow(), vacuum2.getColumn(), oldspr);
+				  grid.SetCell(vacuum2.getRow(), vacuum2.getColumn()+Constants.RIGHT, vacuum2);
+				  vacuum2.moveTo(vacuum2.getRow(), vacuum2.getColumn()+Constants.RIGHT);
+				  validP2Move(spr);
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P2_DOWN){
+		  Sprite spr = grid.GetCell(vacuum2.getRow()+Constants.DOWN, vacuum2.getColumn());
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P1 ){
+				  Sprite oldspr = vacuum2.getUnder();
+				  vacuum2.setUnder(grid.GetCell(vacuum2.getRow()+Constants.DOWN, vacuum2.getColumn()));
+				  grid.SetCell(vacuum2.getRow(), vacuum2.getColumn(), oldspr);
+				  grid.SetCell(vacuum2.getRow()+Constants.DOWN, vacuum2.getColumn(), vacuum2);
+				  vacuum2.moveTo(vacuum2.getRow()+Constants.DOWN, vacuum2.getColumn());
+				  validP2Move(spr);
+				  
+			  }
+		  }
+	  }
+	  else if (nextMove == Constants.P2_UP){
+		  Sprite spr = grid.GetCell(vacuum2.getRow()+Constants.UP, vacuum2.getColumn());
+		  if (spr.getSymbol() != Constants.WALL ){
+			  if (spr.getSymbol() != Constants.P1 ){
+				  Sprite oldspr = vacuum2.getUnder();
+				  vacuum2.setUnder(grid.GetCell(vacuum2.getRow()+Constants.UP, vacuum2.getColumn()));
+				  grid.SetCell(vacuum2.getRow(), vacuum2.getColumn(), oldspr);
+				  grid.SetCell(vacuum2.getRow()+Constants.UP, vacuum2.getColumn(), vacuum2);
+				  vacuum2.moveTo(vacuum2.getRow()+Constants.UP, vacuum2.getColumn());
+				  validP2Move(spr);
+			  }
+		  }
+	  }
+	  
+  }
+  
+  private void validP2Move(Sprite spr){
+	  if (spr.getSymbol() == Constants.DUMPSTER){
+		  vacuum2.empty();
+	  }
+	  else if (spr.getSymbol() == Constants.DUST){
+		  if (vacuum2.clean(Constants.DUST_SCORE)){
+			  dusts.remove(spr);
+		  }
+	  }
+	  else if (spr.getSymbol() == Constants.DUST_BALL){
+		  if (vacuum2.clean(Constants.DUST_SCORE)){
+			  dustBalls.remove(spr);
+		  } 
+	  }
+	  //dustBallMove();
+  }
+  
+  private void validP1Move(Sprite spr){
+	  if (spr.getSymbol() == Constants.DUMPSTER){
+		  vacuum1.empty();
+	  }
+	  else if (spr.getSymbol() == Constants.DUST){
+		  if (vacuum1.clean(Constants.DUST_SCORE)){
+			  dusts.remove(spr);
+		  }
+	  }
+	  else if (spr.getSymbol() == Constants.DUST_BALL){
+		  if (vacuum1.clean(Constants.DUST_SCORE)){
+			  dustBalls.remove(spr);
+		  }
+	  }
+	  //dustBallMove();
+  }
+  
+  /**
+   * Return true if all the dirt has been cleaned, so game is finished
+   * @return true if all the dirt has been cleaned, so game is finished
+   */
+  public boolean gameOver(){
+	  boolean gamefinished = false;
+	  // We know game is over when there is no more Dirt in our game
+	if (dusts.isEmpty() && dustBalls.isEmpty()){
+		gamefinished = true;
+	}
+	return gamefinished;
+  }
+  
+  /**
+   * Return the winner of the game
+   * @return the winner of the game
+   */
+  
+  public char getWinner(){
+	  char winner;
+	  // Check who has the highest score and return the winner
+	  if (vacuum1.getScore() > vacuum2.getScore()){
+		  winner = Constants.P1;
+	  }
+	  else if (vacuum2.getScore() > vacuum1.getScore()){
+		  winner = Constants.P2;
+	  }
+	  // If both players have same score
+	  else{
+		  winner = Constants.TIE;
+	  }
+	  return winner;
+  }
+  
+  
+ 
+  /**
+   * Returns the Sprite after taking it's symbol and index values.
+ * @param symbol the Sprite that we want to generate from
+ * @param row the row value of symbol
+ * @param column the column value of symbol
+ * @return a Sprite
+ */
+private Sprite charToSprite(char symbol, int row, int column){
+	  Sprite spr;
+	  // Create Sprite Wall
+	  if (symbol == Constants.WALL){
+		  spr = new Wall(row, column);		  
+	  }
+	  // Create Sprite CleanHallway
+	  else if (symbol == Constants.CLEAN){
+		  spr = new CleanHallway(row, column);		  
+	  }
+	  // Create Sprite Player 1
+	  else if (symbol == Constants.P1){
+		  spr = new Vacuum(symbol, row, column, Constants.CAPACITY);
+		  vacuum1 = (Vacuum) spr;
+	  }
+	  // Create Sprite Player 2
+	  else if (symbol == Constants.P2){
+		  spr = new Vacuum(symbol, row, column, Constants.CAPACITY);
+		  vacuum2 = (Vacuum) spr;
+	  }
+	  // Create Sprite Dumpster 
+	  else if (symbol == Constants.DUMPSTER){
+		  spr = new Dumpster(row, column);		  
+	  }
+	  // Create Sprite Dust
+	  else if (symbol == Constants.DUST){
+		  spr = new Dust(row, column, Constants.DUST_SCORE);
+		  dusts.add((Dust) spr);
+	  }
+	  // Otherwise create Sprite DustBall
+	  else{
+		  spr = new DustBall(row, column, Constants.DUST_BALL_SCORE);
+		  dustBalls.add((DustBall) spr);
+	  }
+	  return spr;
+  }
+
+  /**
+   * Returns the dimensions of the grid in the file named layoutFileName.
+   * @param layoutFileName path of the input grid file
+   * @return an array [numRows, numCols], where numRows is the number
+   *     of rows and numCols is the number of columns in the grid that
+   *     corresponds to the given input grid file
+   * @throws IOException if cannot open file layoutFileName
+   */
+  private int[] getDimensions(String layoutFileName) throws IOException {       
+
+    Scanner sc = new Scanner(new File(layoutFileName));
+
+    // find the number of columns
+    String nextLine = sc.nextLine();
+    int numCols = nextLine.length();
+
+    // find the number of rows
+    int numRows = 1;
+    while (sc.hasNext()) {
+      numRows++;
+      nextLine = sc.nextLine();
+    }
+
+    sc.close();
+    return new int[]{numRows, numCols};
+  }  
+}

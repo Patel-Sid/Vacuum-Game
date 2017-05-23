@@ -1,0 +1,72 @@
+/**
+ * 
+ */
+package sprites;
+
+import game.Constants;
+
+/**
+ * Representation of a Vacuum
+ * 
+ * @author siddh
+ *
+ */
+public class Vacuum extends Sprite {
+
+	private int score = Constants.INIT_SCORE; // Score of the player
+	private int capacity = Constants.CAPACITY; // Capacity of the vacuum
+	private int fullness = Constants.EMPTY; // Checks whether the vacuum is full or not
+	private Sprite under = new CleanHallway(0,0); // Store's what is under the vacuum
+
+	public Vacuum(char symbol, int row, int column, int capacity) {
+		super(symbol, row, column);
+		this.capacity = capacity;
+	}
+
+	/**
+	 * Returns True if vacuum can clean more or False if it can't
+	 * 
+	 * @return whether the vacuum can clean any further, or false if it has
+	 *         reached its capacity
+	 */
+	public boolean clean(int score) {
+		if ((fullness == capacity)){ // Check to see if the vacuum is full
+			return false;
+		} else {
+			fullness += Constants.FULLNESS_INC; // If it's not full then increase its fullness
+			this.score += score; // Add the value of the Sprite that just got cleaned onto score
+			return true;
+		}
+	}
+
+	public void moveTo(int row, int column) {
+		super.updateCoordinates(row, column);
+	}
+
+	public void empty() {
+		fullness = Constants.EMPTY;
+	}
+
+	/**
+	 * @return the under
+	 */
+	public Sprite getUnder() {
+		return under;
+	}
+
+	/**
+	 * @param under the under to set
+	 */
+	public void setUnder(Sprite under) {
+		this.under = under;
+	}
+
+	/**
+	 * @return the score
+	 */
+	public int getScore() {
+		return score;
+	}
+	
+
+}
